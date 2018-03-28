@@ -17,7 +17,12 @@ def register(request):
         return redirect(reverse('index'))
 
 def success(request):
-    context = { "users": User.objects.all(), "items" : Item.objects.all()}
+    Item.objects.filter(id = request.session['user_id'])
+
+    context = { "users": User.objects.all(), "items" : Item.objects.all(), 
+    "myitems" : Item.objects.filter(id = request.session['user_id'])
+   
+    }
 
     return render(request, 'dojo_ninjas/success.html', context)
 
@@ -31,9 +36,42 @@ def login(request):
 
 def create(request):
     if Item.itemManager.isValid(request.POST, request):
+      if request.method == "POST":   
+        this_user = User.objects.get(id=request.session['user_id'])
+        Item.objects.create(item= request.POST['quote'], user=this_user)
         flag = True
-        
+        #this_user = User.objects.get(id=1)
+        #Item.objects.create(item="Quote3", user=this_user)
+       # Item.objects.create(item = itemInfo['item'], desc = itemInfo['desc'], items = User.objects.get(id = 1)) 
         return redirect (reverse('success'))
     else:
         flag = False
         return redirect(reverse('index'))
+
+def addtolist(request):
+    if request.method == "POST":   
+        this_user = User.objects.get(id=request.session['user_id'])
+        Item.objects.create(item= request.POST['quote'], user=this_user)
+  
+       # Item.objects.create(item = itemInfo['item'], desc = itemInfo['desc'], items = User.objects.get(id = 1)) 
+        return redirect (reverse('success'))
+    else:
+        flag = False
+        return redirect(reverse('create'))
+
+
+
+def update(request):
+    if request.method == "POST": 
+        this_user = User.objects.get(id=request.session['user_id'])
+        Item.objects.create(item= request.POST['quote'], user=this_user)
+  
+       # Item.objects.create(item = itemInfo['item'], desc = itemInfo['desc'], items = User.objects.get(id = 1)) 
+        return redirect (reverse('success'))
+    else:
+        flag = False
+        return redirect(reverse('create'))
+
+def logout(request):
+    request.session.flush()
+    return render(request, 'dojo_ninjas/index.html')

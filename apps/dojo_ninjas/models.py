@@ -53,7 +53,7 @@ class UserManager(models.Manager):
             password = password.encode('utf-8')
             if bcrypt.hashpw(password, hashed) == hashed:
                 request.session["user_id"] = User.objects.get(email = userInfo['email']).id
-                messages.success(request, "Logged in: " + User.objects.get(email = userInfo['email']).first_name +" "+str(request.session['user_id']) +" "+ str(User.objects.get(email = userInfo['email']).id) +"!")
+                messages.success(request, "Welcome: " + User.objects.get(email = userInfo['email']).first_name +" "+str(request.session['user_id']) +" "+ str(User.objects.get(email = userInfo['email']).id) +"!")
                 
                 flag = True
             else:
@@ -78,7 +78,7 @@ class ItemManager(models.Manager):
         
         #if flag == True:
     
-        #    Item.objects.create(item = itemInfo['item'], desc = userInfo['desc'], users = User.objects.get(id = request.session["user_id"]))  
+        #Item.objects.create(item = itemInfo['item'], desc = itemInfo['desc'], items = User.objects.get(id = 1))  
          #   messages.success(request, "Successfully added : , " + str(Item.objects.last().item) + "!")        
         return flag
     
@@ -98,7 +98,7 @@ class Item(models.Model):
     desc = models.CharField(max_length=200)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    users = models.ManyToManyField(User, related_name="items")
+    user = models.ForeignKey(User, related_name="items")
     itemManager = ItemManager()
     objects = models.Manager()
 
